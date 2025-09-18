@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-09-19 00:29:41",
+  "model_analysis": {
+    "total_parameters": 6194,
+    "trainable_parameters": 6194,
+    "batch_normalization_layers": 5,
+    "dropout_layers": 1,
+    "fully_connected_layers": 2,
+    "gap_used": false,
+    "model_architecture": [
+      {
+        "name": "conv1",
+        "type": "Conv2d",
+        "parameters": 80
+      },
+      {
+        "name": "bn1",
+        "type": "BatchNorm2d",
+        "parameters": 16
+      },
+      {
+        "name": "conv2",
+        "type": "Conv2d",
+        "parameters": 864
+      },
+      {
+        "name": "bn2",
+        "type": "BatchNorm2d",
+        "parameters": 24
+      },
+      {
+        "name": "conv3",
+        "type": "Conv2d",
+        "parameters": 1296
+      },
+      {
+        "name": "bn3",
+        "type": "BatchNorm2d",
+        "parameters": 24
+      },
+      {
+        "name": "antman1",
+        "type": "Conv2d",
+        "parameters": 96
+      },
+      {
+        "name": "conv4",
+        "type": "Conv2d",
+        "parameters": 864
+      },
+      {
+        "name": "bn4",
+        "type": "BatchNorm2d",
+        "parameters": 24
+      },
+      {
+        "name": "conv5",
+        "type": "Conv2d",
+        "parameters": 1296
+      },
+      {
+        "name": "bn5",
+        "type": "BatchNorm2d",
+        "parameters": 24
+      },
+      {
+        "name": "antman2",
+        "type": "Conv2d",
+        "parameters": 96
+      },
+      {
+        "name": "conv5addon",
+        "type": "Conv2d",
+        "parameters": 864
+      },
+      {
+        "name": "bn5addon",
+        "type": "BatchNorm2d",
+        "parameters": 24
+      },
+      {
+        "name": "conv6",
+        "type": "Conv2d",
+        "parameters": 1296
+      },
+      {
+        "name": "fc1",
+        "type": "Linear",
+        "parameters": 9424
+      },
+      {
+        "name": "dropout",
+        "type": "Dropout",
+        "parameters": 0
+      },
+      {
+        "name": "fc2",
+        "type": "Linear",
+        "parameters": 170
+      }
+    ]
+  },
+  "test_results": {
+    "test_accuracy": 98.5,
+    "test_samples": 10000,
+    "correct_predictions": 9850,
+    "device_used": "cpu",
+    "training_epochs": 20,
+    "batch_size": 64,
+    "optimizer": "Adam",
+    "learning_rate": 0.001
+  },
+  "summary": {
+    "total_parameters": 6194,
+    "uses_batch_normalization": true,
+    "uses_dropout": true,
+    "uses_fully_connected": true,
+    "uses_gap": false,
+    "test_accuracy": 98.5
+  }
+}
