@@ -44,3 +44,11 @@ jobs:
         echo "=================================="
         python -m pytest tests/ -v
         echo "=================================="
+        
+    - name: Run model training and testing (20 epochs)
+      timeout-minutes: 15
+      run: |
+        echo "Running Model Training and Testing for 20 epochs..."
+        echo "=================================================="
+        python basic_dnn_mnist.py
+        echo "=================================================="
