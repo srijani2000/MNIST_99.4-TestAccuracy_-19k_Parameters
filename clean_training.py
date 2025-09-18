@@ -1,0 +1,142 @@
+# -*- coding: utf-8 -*-
+"""Clean MNIST Training Script - Shows only final results"""
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import StepLR
+
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        # First Block
+        self.conv1 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm2d(8)
+        self.conv2 = nn.Conv2d(8, 12, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm2d(12)
+        self.conv3 = nn.Conv2d(12, 12, kernel_size=3, padding=1)
+        self.bn3 = nn.BatchNorm2d(12)
+
+        # Transition Layer 1
+        self.pool = nn.MaxPool2d(2,2)
+        self.antman1 = nn.Conv2d(12, 8, kernel_size=1)
+
+        # Second Block
+        self.conv4 = nn.Conv2d(8, 12, kernel_size=3, padding=1)
+        self.bn4 = nn.BatchNorm2d(12)
+        self.conv5 = nn.Conv2d(12, 12, kernel_size=3, padding=1)
+        self.bn5 = nn.BatchNorm2d(12)
+
+        # Transition Layer 2
+        self.pool2 = nn.MaxPool2d(2,2)
+        self.antman2 = nn.Conv2d(12, 8, kernel_size=1)
+
+        self.conv5addon = nn.Conv2d(8, 12, kernel_size=3, padding=1)
+        self.bn5addon = nn.BatchNorm2d(12)
+
+        # Final Conv
+        self.conv6 = nn.Conv2d(12, 12, kernel_size=3, padding=1)
+
+        # Classifier
+        self.fc1 = nn.Linear(12*7*7, 16)
+        self.dropout = nn.Dropout(0.05)
+        self.fc2 = nn.Linear(16, 10)
+
+    def forward(self, x):
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = self.pool(F.relu(self.bn3(self.conv3(x))))
+        x = self.antman1(x)
+
+        x = F.relu(self.bn4(self.conv4(x)))
+        x = self.pool(F.relu(self.bn5(self.conv5(x))))
+        x = self.antman2(x)
+
+        x = F.relu(self.bn5addon(self.conv5addon(x)))
+        x = self.conv6(x)
+
+        x = x.view(x.size(0), -1)
+        x = self.fc1(x)
+        x = self.dropout(x)
+        x = self.fc2(x)
+        return F.log_softmax(x, dim=1)
+
+# Calculate parameter count
+model = Net()
+total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Total trainable parameters: {total_params}")
+
+# Data preparation
+train_transforms = transforms.Compose([
+    transforms.RandomRotation((-7.0 , 7.0), fill = (1, )),
+    transforms.RandomAffine(0, translate=(0.02, 0.02)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+test_transforms = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=train_transforms)
+test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=test_transforms)
+
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = Net().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+scheduler = StepLR(optimizer, step_size=6, gamma=0.6)
+
+def train(model, device, train_loader, optimizer, epoch):
+    model.train()
+    correct = 0
+    total = 0
+    for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = F.nll_loss(output, target)
+        loss.backward()
+        optimizer.step()
+        pred = output.argmax(dim=1, keepdim=True)
+        correct += pred.eq(target.view_as(pred)).sum().item()
+        total += target.size(0)
+    train_acc = 100. * correct / total
+    return train_acc
+
+def test(model, device, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += F.nll_loss(output, target, reduction='sum').item()
+            pred = output.argmax(dim=1, keepdim=True)
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset)
+    accuracy = 100. * correct / len(test_loader.dataset)
+    return accuracy
+
+# Training loop - clean output
+print("Starting training for 20 epochs...")
+print("=" * 60)
+
+for epoch in range(1, 21):
+    train_acc = train(model, device, train_loader, optimizer, epoch)
+    test_acc = test(model, device, test_loader)
+    scheduler.step()
+    
+    # Clean epoch output
+    print(f"Epoch {epoch:2d}: Training Accuracy: {train_acc:.2f}% | Testing Accuracy: {test_acc:.2f}%")
+
+print("=" * 60)
+print(f"Total Trainable Parameters: {total_params:,}")
+print("=" * 60)

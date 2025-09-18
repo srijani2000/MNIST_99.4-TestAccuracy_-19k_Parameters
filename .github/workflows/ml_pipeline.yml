@@ -50,5 +50,5 @@ jobs:
       run: |
         echo "Running Model Training and Testing for 20 epochs..."
         echo "=================================================="
-        python basic_dnn_mnist.py
+        python clean_training.py
         echo "=================================================="
