@@ -87,7 +87,7 @@ class TestModel:
         """Test that model has batch normalization layers"""
         model = Net()
         bn_layers = [module for module in model.modules() if isinstance(module, nn.BatchNorm2d)]
-        assert len(bn_layers) == 5
+        assert len(bn_layers) == 6
     
     def test_model_has_dropout(self):
         """Test that model has dropout layers"""
