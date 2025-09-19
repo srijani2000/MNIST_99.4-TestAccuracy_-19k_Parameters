@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch
-from assignment6 import Net
+from basic_dnn_mnist import Net
 
 def count_parameters(model):
     """Count and format the total number of parameters"""
