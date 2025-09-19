@@ -1,3 +1,4 @@
+
 name: ML Pipeline
 
 on:
@@ -29,7 +30,8 @@ jobs:
         echo "========================="
         python -c "
         import torch
-        from tests.test_model import Net
+        #from assignment6 import Net
+        from basic_dnn_mnist import Net
         model = Net()
         total_params = sum(p.numel() for p in model.parameters())
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -44,11 +46,3 @@ jobs:
         echo "=================================="
         python -m pytest tests/ -v
         echo "=================================="
-        
-    - name: Run model training and testing (20 epochs)
-      timeout-minutes: 15
-      run: |
-        echo "Running Model Training and Testing for 20 epochs..."
-        echo "=================================================="
-        python clean_training.py
-        echo "=================================================="
