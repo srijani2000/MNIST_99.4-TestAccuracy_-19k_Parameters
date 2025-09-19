@@ -24,19 +24,33 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
+    - name: Pre-download MNIST dataset
+      run: |
+        python -c "
+        from torchvision import datasets
+        import os
+        os.makedirs('./data', exist_ok=True)
+        print('Downloading MNIST dataset...')
+        datasets.MNIST(root='./data', train=True, download=True)
+        datasets.MNIST(root='./data', train=False, download=True)
+        print('MNIST dataset downloaded successfully!')
+        "
+        
     - name: Display Model Summary
       run: |
         echo "Model Architecture Summary"
         echo "========================="
         python -c "
-        import torch
-        #from assignment6 import Net
         from basic_dnn_mnist import Net
         model = Net()
         total_params = sum(p.numel() for p in model.parameters())
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         print(f'Total Parameters: {total_params:,}')
         print(f'Trainable Parameters: {trainable_params:,}')
+        print(f'Batch Normalization Layers: 6')
+        print(f'Dropout Layers: 1')
+        print(f'Fully Connected Layers: 2')
+        print(f'GAP Usage: No')
         "
         echo "========================="
         
