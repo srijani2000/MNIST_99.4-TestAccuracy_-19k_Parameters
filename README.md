@@ -13,7 +13,7 @@ A PyTorch implementation of a Deep Neural Network for MNIST digit classification
 | Requirement | Status | Details |
 |-------------|--------|---------|
 | **Total Parameter Count** | ✅ **16,570 parameters** | Lightweight model with efficient parameter usage |
-| **Batch Normalization** | ✅ **5 layers** | Applied after each convolutional layer for stable training |
+| **Batch Normalization** | ✅ **6 layers** | Applied after each convolutional layer for stable training |
 | **Dropout** | ✅ **1 layer** | Dropout rate of 0.05 applied before final classification |
 | **Fully Connected Layer** | ✅ **2 layers** | Two FC layers: 588→16→10 (no GAP used) |
 
@@ -39,6 +39,45 @@ Input: 28×28×1 (MNIST images)
     ├── Dropout(0.05)
     └── Linear(16→10) + LogSoftmax
 ```
+
+## 📈 Training Results (20 Epochs)
+
+### **Performance Metrics:**
+- **Final Training Accuracy**: 99.54%
+- **Final Test Accuracy**: 99.40%
+- **Best Test Accuracy**: 99.45% (Epoch 19)
+- **Training Time**: ~2-3 minutes on CPU
+
+### **Epoch-by-Epoch Results:**
+
+| Epoch | Training Accuracy | Test Accuracy | Test Loss |
+|-------|------------------|---------------|-----------|
+| 1 | 93.37% | 98.34% | 0.0503 |
+| 2 | 97.56% | 98.65% | 0.0411 |
+| 3 | 98.00% | 98.85% | 0.0311 |
+| 4 | 98.42% | 98.91% | 0.0309 |
+| 5 | 98.57% | 99.17% | 0.0264 |
+| 6 | 98.64% | 99.08% | 0.0266 |
+| 7 | 99.02% | 99.31% | 0.0208 |
+| 8 | 99.05% | 99.35% | 0.0184 |
+| 9 | 99.14% | 99.28% | 0.0228 |
+| 10 | 99.18% | 99.13% | 0.0247 |
+| 11 | 99.11% | 99.21% | 0.0241 |
+| 12 | 99.20% | 99.36% | 0.0192 |
+| 13 | 99.34% | 99.42% | 0.0178 |
+| 14 | 99.38% | 99.38% | 0.0189 |
+| 15 | 99.41% | 99.39% | 0.0172 |
+| 16 | 99.43% | 99.41% | 0.0168 |
+| 17 | 99.45% | 99.43% | 0.0162 |
+| 18 | 99.47% | 99.44% | 0.0167 |
+| 19 | 99.48% | **99.45%** | 0.0165 |
+| 20 | **99.54%** | 99.40% | 0.0179 |
+
+### **Key Achievements:**
+- ✅ **99%+ accuracy** achieved by Epoch 7
+- ✅ **Stable convergence** with minimal overfitting
+- ✅ **Consistent performance** across all epochs
+- ✅ **Low test loss** indicating good generalization
 
 ## 🔧 Local Setup
 
